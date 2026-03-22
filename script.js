@@ -7,88 +7,116 @@ const WHATSAPP_BASE = 'https://wa.me/9720505851612?text=';
 const products = [
   {
     id: 1,
-    name: 'מארז מתוק קטן',
-    category: 'boxes',
-    categoryLabel: 'מארזים',
-    price: 250,
-    image: 'images/box-small.png',
-    badge: 'פופולרי',
-    description: 'מארז מפנק עם מבחר עוגיות פיסטוק ושוקולד חלב, מגולגלות נוטלה וקינדר, וגלילי וופל קדאיף ונוטלה. מושלם למתנה או לאירוח.'
+    name: 'אלפחורס',
+    category: 'cookies',
+    categoryLabel: 'עוגיות',
+    price: 60,
+    image: 'images/alfachores.png',
+    description: '10 יחידות אלפחורס עם מילוי דולסה דה לצ\'ה וקוקוס. עוגיית החמאה הקלאסית שנמסה בפה.'
   },
   {
     id: 2,
-    name: 'מארז מתוק גדול',
-    category: 'boxes',
-    categoryLabel: 'מארזים',
-    price: 320,
-    image: 'images/box-large.png',
-    badge: 'הנמכר ביותר',
-    description: 'מארז גדול ומרשים עם בראוניז קרמל מלוח ושוקולד חלב, כדורי ביסקוויט, מגולגלות קקאו קינדר ומגולגלות נוטלה קינדר.'
+    name: 'עוגיות שוקולד חלב ובלונדי',
+    category: 'cookies',
+    categoryLabel: 'עוגיות',
+    price: 95,
+    image: 'images/cookies-blondi.png',
+    badge: 'פופולרי',
+    description: '5 יחידות קוטר 8 (גדולות). עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים.'
   },
   {
     id: 3,
-    name: 'עוגיות פיסטוק ושוקולד',
-    category: 'cookies',
-    categoryLabel: 'עוגיות',
-    price: 80,
-    image: 'images/box-small.png',
-    description: 'עוגיות פיסטוק עשירות עם ציפוי שוקולד חלב ופיסטוקים קצוצים מלמעלה. טעם שלא שוכחים.'
-  },
-  {
-    id: 4,
     name: 'מגולגלות נוטלה וקינדר',
     category: 'cookies',
     categoryLabel: 'עוגיות',
-    price: 75,
-    image: 'images/box-large.png',
-    description: 'מגולגלות שוקולד רכות במילוי נוטלה וקינדר. כל ביס הוא חוויה.'
+    price: 76,
+    image: 'images/megulgalot-nutella.png',
+    description: '12 יחידות מגולגלות במילוי נוטלה וקינדר. שכבות של בצק חמאה עם שוקולד - כל ביס הוא חוויה.'
+  },
+  {
+    id: 4,
+    name: 'מגולגלות קינדר',
+    category: 'cookies',
+    categoryLabel: 'עוגיות',
+    price: 76,
+    image: 'images/megulgalot-kinder.png',
+    description: '12 יחידות מגולגלות קקאו במילוי קינדר. בצק שוקולד כהה עם שכבות קרם קינדר לבן.'
   },
   {
     id: 5,
-    name: 'בראוניז קרמל מלוח',
-    category: 'cakes',
-    categoryLabel: 'עוגות',
-    price: 90,
-    image: 'images/box-large.png',
-    description: 'בראוניז שוקולד עשירים עם שכבת קרמל מלוח וציפוי שוקולד חלב. השילוב המושלם בין מתוק למלוח.'
-  },
-  {
-    id: 6,
-    name: 'כדורי ביסקוויט שוקולד',
-    category: 'desserts',
-    categoryLabel: 'קינוחים',
-    price: 70,
-    image: 'images/box-large.png',
-    description: 'כדורי ביסקוויט עם ציפוי שוקולד מריר ושוקולד חלב. קינוח מושלם לכל אירוע.'
-  },
-  {
-    id: 7,
-    name: 'גלילי וופל קדאיף ונוטלה',
+    name: 'כדורי שוקולד',
     category: 'desserts',
     categoryLabel: 'קינוחים',
     price: 85,
-    image: 'images/box-small.png',
-    description: 'גלילי וופל קדאיף פריכים במילוי נוטלה עם ציפוי שוקולד. שילוב מנצח של טקסטורות.'
+    image: 'images/chocolate-balls.png',
+    description: '20 יחידות כדורי שוקולד - קוקוס ושוקולד עם סוכריות צבעוניות. מושלם לאירוח ולמתנה.'
+  },
+  {
+    id: 6,
+    name: '6 עוגיות טעמים',
+    category: 'cookies',
+    categoryLabel: 'עוגיות',
+    price: 160,
+    image: 'images/cookies-6-flavors.png',
+    badge: 'הנמכר ביותר',
+    description: 'מבחר 6 עוגיות בטעמים: קינדר ונוטלה, חצי חצי, אמסטרדם, שוקולד קונפטי, 100% פיסטוק ופירות יער.'
+  },
+  {
+    id: 7,
+    name: 'מארז קייק פופס ועוגיות',
+    category: 'boxes',
+    categoryLabel: 'מארזים',
+    price: 200,
+    image: 'images/box-cakepops.png',
+    description: 'מארז מפנק עם עוגיות קרמל מלוח, נוטלה ושוקולד חלב לצד קייק פופס שוקולד חלב עם סרט ורוד.'
   },
   {
     id: 8,
-    name: 'עוגת שוקולד ליום הולדת',
-    category: 'cakes',
-    categoryLabel: 'עוגות',
-    price: 280,
-    image: 'images/box-large.png',
-    badge: 'בהזמנה',
-    description: 'עוגת שוקולד מרשימה בעיצוב אישי. מושלמת לימי הולדת ואירועים. ניתן להתאים טעמים ועיצוב.'
+    name: 'מארז מגולגלות ובראוניז',
+    category: 'boxes',
+    categoryLabel: 'מארזים',
+    price: 170,
+    image: 'images/box-brownies-megulgalot.png',
+    description: '16 מגולגלות קינדר + בראוניז 16x16 עם צ\'אנקים של שוקולד לבן ומריר וזילוף נוטלה.'
   },
   {
     id: 9,
-    name: 'מארז מתנה VIP',
+    name: 'מארז עוגייה ענקית ומגולגלות',
     category: 'boxes',
     categoryLabel: 'מארזים',
-    price: 400,
-    image: 'images/box-large.png',
+    price: 300,
+    image: 'images/box-giant-cookie.png',
+    description: 'עוגייה ענקית קוטר 16 עם מילוי ומלא תוספות + 16 יח\' מגולגלות קינדר. מתנה מרשימה!'
+  },
+  {
+    id: 10,
+    name: 'מארז יום הולדת',
+    category: 'boxes',
+    categoryLabel: 'מארזים',
+    price: 300,
+    image: 'images/box-birthday.png',
+    badge: 'ליום הולדת',
+    description: 'מארז חגיגי עם עוגת שוקולד מעוצבת, מגולגלות נוטלה וקינדר, אלפחורס וקייק פופס. מושלם לחגיגה!'
+  },
+  {
+    id: 11,
+    name: 'מארז פרימיום',
+    category: 'boxes',
+    categoryLabel: 'מארזים',
+    price: 340,
+    image: 'images/box-premium-340.png',
     badge: 'פרימיום',
-    description: 'המארז המרשים ביותר שלנו! כולל מבחר של כל הפינוקים - עוגיות, מגולגלות, בראוניז, כדורים וגלילי וופל. מתנה שלא שוכחים.'
+    description: 'חיתוכיות שוקולד 16x16, כדורי קדאיף דובאי, 14 מגולגלות נוטלה וקינדר ועוגיות קראמבל פיסטוק עם ליבת שוקולד לבן.'
+  },
+  {
+    id: 12,
+    name: 'מארז VIP',
+    category: 'boxes',
+    categoryLabel: 'מארזים',
+    price: 450,
+    image: 'images/box-premium-450.png',
+    badge: 'VIP',
+    description: 'המארז הגדול והמרשים ביותר! עוגיות קראמבל פיסטוק, מגולגלות, בראוניז פיסטוק, גלילי וופל ועוד. מתנה שלא שוכחים.'
   }
 ];
 
