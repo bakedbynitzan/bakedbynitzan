@@ -1,5 +1,18 @@
 [
   {
+    "id": 1774256692519,
+    "name": "מיקס מגולגלות",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 76,
+    "description": "מיקס מגולגלות - 12 יח׳ בטעמים נוטלה,קינדר ודובאי (ניתן לבחור 2/3 טעמים)",
+    "image": "images/product-1774256690606-l69sk-5.jpeg",
+    "images": [
+      "images/product-1774256690606-l69sk-5.jpeg"
+    ],
+    "badge": "פופולרי"
+  },
+  {
     "id": 1,
     "name": "האלפחורס  שלי",
     "category": "cookies",
@@ -149,19 +162,6 @@
       "images/product-1774233037520.jpeg"
     ],
     "badge": "VIP"
-  },
-  {
-    "id": 1774256692519,
-    "name": "מיקס מגולגלות",
-    "category": "cookies",
-    "categoryLabel": "עוגיות",
-    "price": 76,
-    "description": "מיקס מגולגלות - 12 יח׳ בטעמים נוטלה,קינדר ודובאי (ניתן לבחור 2/3 טעמים)",
-    "image": "images/product-1774256690606-l69sk-5.jpeg",
-    "images": [
-      "images/product-1774256690606-l69sk-5.jpeg"
-    ],
-    "badge": "פופולרי"
   },
   {
     "id": 1774257014678,
