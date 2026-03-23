@@ -310,6 +310,14 @@
         <input type="number" id="prodPrice" placeholder="60" min="0" dir="ltr">
       </div>
       <div class="form-group">
+        <label>מחיר מקסימום (אופציונלי - לטווח מחירים)</label>
+        <input type="number" id="prodMaxPrice" placeholder="למשל: 160 (ישים טווח 140-160)" min="0" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>הערת מחיר (אופציונלי)</label>
+        <input type="text" id="prodPriceNote" placeholder="למשל: תלוי עיצוב, לפי גודל">
+      </div>
+      <div class="form-group">
         <label>תיאור</label>
         <textarea id="prodDescription" placeholder="תיאור קצר של המוצר..."></textarea>
       </div>
@@ -543,7 +551,8 @@
           <img src="${thumb}" alt="${p.name}" onerror="this.src='images/logo.png'">
           <div class="product-item-info"><h3>${p.name}${imgCount}</h3><p>${p.description || ''}</p></div>
           <div class="product-item-meta">
-            <span class="product-item-price">${p.price} &#8362;</span>
+            <span class="product-item-price">${p.maxPrice ? p.price + '-' + p.maxPrice : p.price} &#8362;</span>
+            ${p.priceNote ? `<span class="product-item-badge">${p.priceNote}</span>` : ''}
             ${p.badge ? `<span class="product-item-badge">${p.badge}</span>` : ''}
           </div>
           <div class="product-item-actions">
@@ -570,6 +579,8 @@
       document.getElementById('prodName').value = p ? p.name : '';
       document.getElementById('prodCategory').value = p ? p.category : 'cookies';
       document.getElementById('prodPrice').value = p ? p.price : '';
+      document.getElementById('prodMaxPrice').value = p && p.maxPrice ? p.maxPrice : '';
+      document.getElementById('prodPriceNote').value = p && p.priceNote ? p.priceNote : '';
       document.getElementById('prodDescription').value = p ? (p.description || '') : '';
       document.getElementById('prodBadge').value = p ? (p.badge || '') : '';
 
@@ -626,6 +637,9 @@
       const name = document.getElementById('prodName').value.trim();
       const category = document.getElementById('prodCategory').value;
       const price = parseInt(document.getElementById('prodPrice').value);
+      const maxPriceVal = document.getElementById('prodMaxPrice').value.trim();
+      const maxPrice = maxPriceVal ? parseInt(maxPriceVal) : null;
+      const priceNote = document.getElementById('prodPriceNote').value.trim();
       const description = document.getElementById('prodDescription').value.trim();
       const badge = document.getElementById('prodBadge').value.trim();
 
@@ -673,7 +687,9 @@
           price, description,
           image: allImages[0],
           images: allImages,
-          badge: badge || undefined
+          badge: badge || undefined,
+          maxPrice: maxPrice || undefined,
+          priceNote: priceNote || undefined
         };
 
         if (editingIndex !== null) {
