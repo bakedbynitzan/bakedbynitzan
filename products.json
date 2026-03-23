@@ -64,6 +64,47 @@
     "badge": "פופולרי"
   },
   {
+    "id": 12,
+    "name": "מארז דובאי",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 450,
+    "description": "בראוניז קוטר 16 בציפוי קדאיף פיסטוק,\n3 יח׳ קראמבל קוקיז פיסטוק,\n12 יח׳ מגולגלות דובאי,\n8 יחידות גלילי ופל במילוי דובאי וציפוי שוקולד חלב",
+    "image": "images/product-1774233037520.jpeg",
+    "images": [
+      "images/product-1774233037520.jpeg"
+    ],
+    "badge": "VIP"
+  },
+  {
+    "id": 11,
+    "name": "מארז פרימיום",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 340,
+    "description": "חיתוכיות כדורי שוקולד בציפוי גנאש וזילוף שוקולד לבן, 5 יח׳ כדורי דובאי, 14 יח׳ מגולגלות נוטלה ו5 יח׳ קראמבל קוקיז פיסטוק",
+    "image": "images/product-1774233193707-tsbhv-1.jpeg",
+    "images": [
+      "images/product-1774233193707-tsbhv-1.jpeg"
+    ],
+    "badge": "פרימיום"
+  },
+  {
+    "id": 1774257014678,
+    "name": "עוגות מיני בנטו ✨",
+    "category": "cakes",
+    "categoryLabel": "עוגות",
+    "price": 140,
+    "description": "עוגות בנטו קוטר 10 בכל עיצוב שתרצו✨ \nשכבות של טורט שוקולד/וניל, קרם שמנת מילויים ותוספות לבחירה במעמד ההזמנה בוואצפ . \nמחיר - 140₪-160₪ (תלוי בעיצוב)",
+    "image": "images/product-1774257012608-bsyr7-6.jpeg",
+    "images": [
+      "images/product-1774257012608-bsyr7-6.jpeg",
+      "images/product-1774258915032-6txrs-10.jpeg",
+      "images/product-1774258916995-39zza-11.jpeg"
+    ],
+    "maxPrice": 160
+  },
+  {
     "id": 5,
     "name": "כדורי שוקולד 100%",
     "category": "cookies",
@@ -136,47 +177,6 @@
       "images/product-1774260236647-yhxu3-3.jpeg"
     ],
     "badge": "ליום הולדת"
-  },
-  {
-    "id": 11,
-    "name": "מארז פרימיום",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 340,
-    "description": "חיתוכיות כדורי שוקולד בציפוי גנאש וזילוף שוקולד לבן, 5 יח׳ כדורי דובאי, 14 יח׳ מגולגלות נוטלה ו5 יח׳ קראמבל קוקיז פיסטוק",
-    "image": "images/product-1774233193707-tsbhv-1.jpeg",
-    "images": [
-      "images/product-1774233193707-tsbhv-1.jpeg"
-    ],
-    "badge": "פרימיום"
-  },
-  {
-    "id": 12,
-    "name": "מארז דובאי",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 450,
-    "description": "בראוניז קוטר 16 בציפוי קדאיף פיסטוק,\n3 יח׳ קראמבל קוקיז פיסטוק,\n12 יח׳ מגולגלות דובאי,\n8 יחידות גלילי ופל במילוי דובאי וציפוי שוקולד חלב",
-    "image": "images/product-1774233037520.jpeg",
-    "images": [
-      "images/product-1774233037520.jpeg"
-    ],
-    "badge": "VIP"
-  },
-  {
-    "id": 1774257014678,
-    "name": "עוגות מיני בנטו ✨",
-    "category": "cakes",
-    "categoryLabel": "עוגות",
-    "price": 140,
-    "description": "עוגות בנטו קוטר 10 בכל עיצוב שתרצו✨ \nשכבות של טורט שוקולד/וניל, קרם שמנת מילויים ותוספות לבחירה במעמד ההזמנה בוואצפ . \nמחיר - 140₪-160₪ (תלוי בעיצוב)",
-    "image": "images/product-1774257012608-bsyr7-6.jpeg",
-    "images": [
-      "images/product-1774257012608-bsyr7-6.jpeg",
-      "images/product-1774258915032-6txrs-10.jpeg",
-      "images/product-1774258916995-39zza-11.jpeg"
-    ],
-    "maxPrice": 160
   },
   {
     "id": 1774257180669,
