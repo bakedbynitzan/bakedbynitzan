@@ -196,5 +196,17 @@
     "images": [
       "images/product-1774257463581-21gvv-10.jpeg"
     ]
+  },
+  {
+    "id": 1774257688992,
+    "name": "מארז S",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 135,
+    "description": "3 יח׳ אלפחורס. 3 יח׳ קראמבל קוקיז פיסטוק, 6 יח׳ מגולגלות דובאי",
+    "image": "images/product-1774257686788-8xgjo-1.jpeg",
+    "images": [
+      "images/product-1774257686788-8xgjo-1.jpeg"
+    ]
   }
 ]
