@@ -14,13 +14,16 @@
   },
   {
     "id": 2,
-    "name": "עוגיות שוקולד חלב ובלונדי",
+    "name": "אופק המלך",
     "category": "cookies",
     "categoryLabel": "עוגיות",
     "price": 95,
+    "description": "5 יחידות קוטר 8 (גדולות). עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים.",
     "image": "images/cookies-blondi.png",
-    "badge": "פופולרי",
-    "description": "5 יחידות קוטר 8 (גדולות). עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים."
+    "images": [
+      "images/cookies-blondi.png"
+    ],
+    "badge": "פופולרי"
   },
   {
     "id": 3,
