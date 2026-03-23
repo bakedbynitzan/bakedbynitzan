@@ -208,5 +208,17 @@
     "images": [
       "images/product-1774257686788-8xgjo-1.jpeg"
     ]
+  },
+  {
+    "id": 1774257871984,
+    "name": "מארז",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 240,
+    "description": "עוגת פס אינגליש קייק שוקולד עסיסית בציפוי גנאש מריר&חלב וסוכריות קונפטי, 6 יח׳ אלפחורס, 6 יח׳ מיני קוקיז(ניתן לבחור טעם) \n*ניתן להוסיף כיתוב*",
+    "image": "images/product-1774257870395-m3anh-2.jpeg",
+    "images": [
+      "images/product-1774257870395-m3anh-2.jpeg"
+    ]
   }
 ]
