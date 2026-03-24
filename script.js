@@ -706,16 +706,7 @@ function initAccessibility() {
   const reset = document.getElementById('a11yReset');
   if (!toggle || !panel) return;
 
-  const A11Y_KEY = 'a11y_settings';
   const textLevels = ['', 'a11y-large-text', 'a11y-xl-text'];
-
-  function loadSettings() {
-    try { return JSON.parse(localStorage.getItem(A11Y_KEY)) || {}; } catch { return {}; }
-  }
-
-  function saveSettings(s) {
-    localStorage.setItem(A11Y_KEY, JSON.stringify(s));
-  }
 
   function applySettings(settings) {
     const html = document.documentElement;
@@ -738,8 +729,7 @@ function initAccessibility() {
     });
   }
 
-  let settings = loadSettings();
-  applySettings(settings);
+  let settings = {};
 
   toggle.addEventListener('click', () => {
     panel.classList.toggle('open');
@@ -763,14 +753,12 @@ function initAccessibility() {
       } else if (key === 'no-animations') {
         settings.noAnimations = !settings.noAnimations;
       }
-      saveSettings(settings);
       applySettings(settings);
     });
   });
 
   reset.addEventListener('click', () => {
     settings = {};
-    saveSettings(settings);
     applySettings(settings);
   });
 }
