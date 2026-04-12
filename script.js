@@ -146,10 +146,11 @@ function getWhatsAppBaseLink() {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 }
 
+const _imgVer = 'v27';
 function resolveImageUrl(path) {
   if (!path) return 'images/logo.png';
   if (path.startsWith('http')) return path;
-  return path;
+  return path + '?' + _imgVer;
 }
 
 function getProductImages(product) {
