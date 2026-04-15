@@ -324,18 +324,6 @@
     ]
   },
   {
-    "id": 1774726832486,
-    "name": "מארז מיני",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 135,
-    "description": "3 יח׳ אלפחורס \n3 יח׳ קראמבל קוקיז בלונדי&שוקולד חלב \n6 יח׳ מגולגלות קקאו קינדר",
-    "image": "images/product-1774726830348-smkp8-15.jpeg",
-    "images": [
-      "images/product-1774726830348-smkp8-15.jpeg"
-    ]
-  },
-  {
     "id": 1775823883311,
     "name": "עוגיות בצק פריך ריבה",
     "category": "cookies",
@@ -346,6 +334,18 @@
     "images": [
       "images/product-1775823876363-gae3x-2.jpeg",
       "images/product-1775823868906-6ot9c-1.jpeg"
+    ]
+  },
+  {
+    "id": 1774726832486,
+    "name": "מארז מיני",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 135,
+    "description": "3 יח׳ אלפחורס \n3 יח׳ קראמבל קוקיז בלונדי&שוקולד חלב \n6 יח׳ מגולגלות קקאו קינדר",
+    "image": "images/product-1774726830348-smkp8-15.jpeg",
+    "images": [
+      "images/product-1774726830348-smkp8-15.jpeg"
     ]
   },
   {
