@@ -373,5 +373,17 @@
       "images/product-1774726362550-xzgz3-12.jpeg",
       "images/product-1774726365117-24ha1-13.jpeg"
     ]
+  },
+  {
+    "id": 1778075720266,
+    "name": "מיני קראמבל קוקיז",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 59,
+    "description": "עוגיות מיני שמנמנות קריספיות מבחוץ רכות מבפנים. \nיש אופציה לטעמים נוספים בתיאום בוואצפ לפי המלאי הזמין .",
+    "image": "images/product-1778075717962-ijji5-4.jpeg",
+    "images": [
+      "images/product-1778075717962-ijji5-4.jpeg"
+    ]
   }
 ]
