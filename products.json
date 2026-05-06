@@ -245,19 +245,6 @@
     ]
   },
   {
-    "id": 1774258568435,
-    "name": "עוגת גבינה ניו יורק",
-    "category": "cakes",
-    "categoryLabel": "עוגות",
-    "price": 320,
-    "description": "עוגת גבינה ניו יורק עשירה וקרמית. מסקרפונה, שוקולד לבן, גרגירי וניל אמיתי בציפוי שמנת חמוצה על בסיס בצק פריך \n*פירות בהתאם לעונה*",
-    "image": "images/product-1774258562129-dvc13-3.jpeg",
-    "images": [
-      "images/product-1774258562129-dvc13-3.jpeg",
-      "images/product-1774258566919-x5g2j-4.jpeg"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -268,6 +255,19 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 1774258568435,
+    "name": "עוגת גבינה ניו יורק",
+    "category": "cakes",
+    "categoryLabel": "עוגות",
+    "price": 320,
+    "description": "עוגת גבינה ניו יורק עשירה וקרמית. מסקרפונה, שוקולד לבן, גרגירי וניל אמיתי בציפוי שמנת חמוצה על בסיס בצק פריך \n*פירות בהתאם לעונה*",
+    "image": "images/product-1774258562129-dvc13-3.jpeg",
+    "images": [
+      "images/product-1774258562129-dvc13-3.jpeg",
+      "images/product-1774258566919-x5g2j-4.jpeg"
     ]
   },
   {
