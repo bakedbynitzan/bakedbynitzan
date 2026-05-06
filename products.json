@@ -300,18 +300,6 @@
     ]
   },
   {
-    "id": 1774260135167,
-    "name": "מארז בלונדי&שוקולד חלב",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 399,
-    "description": "בראוניז 16X16 פאדג׳ מלח גס בלונדי&שוקולד חלב,  16 כדורי פאדג׳ בלונדי&שוקולד חלב, 20 יח׳ מגולגלות קינדר&נוטלה",
-    "image": "images/product-1774260132919-6jihy-2.jpeg",
-    "images": [
-      "images/product-1774260132919-6jihy-2.jpeg"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -322,6 +310,18 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 1774260135167,
+    "name": "מארז בלונדי&שוקולד חלב",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 399,
+    "description": "בראוניז 16X16 פאדג׳ מלח גס בלונדי&שוקולד חלב,  16 כדורי פאדג׳ בלונדי&שוקולד חלב, 20 יח׳ מגולגלות קינדר&נוטלה",
+    "image": "images/product-1774260132919-6jihy-2.jpeg",
+    "images": [
+      "images/product-1774260132919-6jihy-2.jpeg"
     ]
   },
   {
