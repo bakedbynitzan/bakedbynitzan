@@ -119,19 +119,6 @@
     ]
   },
   {
-    "id": 6,
-    "name": "מארז קראמבל קוקיז",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 160,
-    "description": "מארז 6 עוגיות בטעמים: קינדר ונוטלה, חצי חצי, אמסטרדם, שוקולד קונפטי, 100% פיסטוק ופירות יער.",
-    "image": "images/cookies-6-flavors.png",
-    "images": [
-      "images/cookies-6-flavors.png"
-    ],
-    "badge": "הנמכר ביותר"
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -143,6 +130,19 @@
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
     ]
+  },
+  {
+    "id": 6,
+    "name": "מארז קראמבל קוקיז",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 160,
+    "description": "מארז 6 עוגיות בטעמים: קינדר ונוטלה, חצי חצי, אמסטרדם, שוקולד קונפטי, 100% פיסטוק ופירות יער.",
+    "image": "images/cookies-6-flavors.png",
+    "images": [
+      "images/cookies-6-flavors.png"
+    ],
+    "badge": "הנמכר ביותר"
   },
   {
     "id": 7,
