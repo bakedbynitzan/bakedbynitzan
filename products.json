@@ -107,18 +107,6 @@
     "maxPrice": 160
   },
   {
-    "id": 5,
-    "name": "כדורי שוקולד 100%",
-    "category": "cookies",
-    "categoryLabel": "עוגיות",
-    "price": 85,
-    "description": "20 יח׳ כדורי שוקולד 100% שוקולד מריר איכותי עם קוקוס וסוכריות קונפטי.",
-    "image": "images/product-1774256160736-cc97j-3.jpeg",
-    "images": [
-      "images/product-1774256160736-cc97j-3.jpeg"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -129,6 +117,18 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "כדורי שוקולד 100%",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 85,
+    "description": "20 יח׳ כדורי שוקולד 100% שוקולד מריר איכותי עם קוקוס וסוכריות קונפטי.",
+    "image": "images/product-1774256160736-cc97j-3.jpeg",
+    "images": [
+      "images/product-1774256160736-cc97j-3.jpeg"
     ]
   },
   {
