@@ -312,18 +312,6 @@
     ]
   },
   {
-    "id": 1774260498180,
-    "name": "מארז שוקולד לבן&חלב",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 270,
-    "description": "בראוניז פאדג׳ 16X16, מלח גס, שוקולד לבן&חלב, 8 יח׳ מיני קוקיז שוקולד לבן&חלב, 10 יח׳ קייק פופס שוקולד בציפוי שוקולד חלב",
-    "image": "images/product-1774260496486-9dg9j-4.jpeg",
-    "images": [
-      "images/product-1774260496486-9dg9j-4.jpeg"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -334,6 +322,18 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 1774260498180,
+    "name": "מארז שוקולד לבן&חלב",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 270,
+    "description": "בראוניז פאדג׳ 16X16, מלח גס, שוקולד לבן&חלב, 8 יח׳ מיני קוקיז שוקולד לבן&חלב, 10 יח׳ קייק פופס שוקולד בציפוי שוקולד חלב",
+    "image": "images/product-1774260496486-9dg9j-4.jpeg",
+    "images": [
+      "images/product-1774260496486-9dg9j-4.jpeg"
     ]
   },
   {
