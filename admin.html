@@ -81,6 +81,16 @@
     .preview-card-price-note { font-size: 0.6em; font-weight: 400; color: #999; margin-right: 4px; }
     .preview-card-order { background: #000; color: #fff; padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-decoration: none; }
     .preview-card-badge { display: inline-block; background: #000; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; }
+    .category-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 12px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .category-filter-btn { background: #f5f5f5; border: 2px solid transparent; color: #555; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 500; transition: all 0.15s; }
+    .category-filter-btn:hover { background: #e8e8e8; }
+    .category-filter-btn.active { background: #000; color: #fff; border-color: #000; }
+    .category-filter-btn .count { font-size: 0.75rem; opacity: 0.7; margin-right: 4px; }
+    .category-filter-btn.active .count { opacity: 0.9; }
+    .category-section-header { background: linear-gradient(135deg, #fff8dc, #ffeacc); padding: 14px 18px; border-radius: 10px; margin: 24px 0 12px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid #d4a017; }
+    .category-section-header:first-child { margin-top: 0; }
+    .category-section-header h3 { font-size: 1.1rem; color: #8b6914; margin: 0; }
+    .category-section-header .count-badge { background: #d4a017; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
 
     .form-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .form-overlay.active { display: flex; }
@@ -192,6 +202,7 @@
           <h2>המוצרים שלי</h2>
           <button class="btn-add" id="addProductBtn">+ מוצר חדש</button>
         </div>
+        <div class="category-filter" id="categoryFilter"></div>
         <div class="empty-state" id="emptyState" style="display:none;">
           <p>אין מוצרים עדיין</p>
         </div>
@@ -697,10 +708,69 @@
       return d.innerHTML;
     }
 
+    let currentCategoryFilter = 'all';
+
+    function renderCategoryFilter() {
+      const filter = document.getElementById('categoryFilter');
+      if (!filter) return;
+      const counts = {};
+      products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+      const total = products.length;
+      const cats = Object.keys(CATEGORIES).filter(c => counts[c] > 0);
+      let html = `<button class="category-filter-btn ${currentCategoryFilter === 'all' ? 'active' : ''}" onclick="setCategoryFilter('all')">כל המוצרים <span class="count">(${total})</span></button>`;
+      cats.forEach(c => {
+        html += `<button class="category-filter-btn ${currentCategoryFilter === c ? 'active' : ''}" onclick="setCategoryFilter('${c}')">${esc(CATEGORIES[c])} <span class="count">(${counts[c]})</span></button>`;
+      });
+      filter.innerHTML = html;
+    }
+
+    function setCategoryFilter(cat) {
+      currentCategoryFilter = cat;
+      renderProductList();
+    }
+
+    function buildProductItemHTML(p, globalIdx, catPos, catTotal) {
+      const imgs = p.images || (p.image ? [p.image] : []);
+      const rawThumb = imgs[0] || '';
+      const thumb = rawThumb ? (rawThumb.startsWith('http') ? rawThumb : `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${rawThumb}?v=${Date.now()}`) : 'images/logo.png';
+      const imgCount = imgs.length > 1 ? ` (${imgs.length} תמונות)` : '';
+      const catLabel = p.categoryLabel || p.category;
+      const isFirstInCat = catPos === 1;
+      const isLastInCat = catPos === catTotal;
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      item.innerHTML = `
+        <img src="${esc(thumb)}" alt="${esc(p.name)}" onerror="this.src='images/logo.png'">
+        <div class="product-item-info">
+          <h3>${esc(p.name)}${imgCount}</h3>
+          <p><span class="product-item-category-badge">${esc(catLabel)} ${catPos}/${catTotal}</span>${esc(p.description)}</p>
+        </div>
+        <div class="product-item-meta">
+          <span class="product-item-price">${p.maxPrice ? p.price + '-' + p.maxPrice : p.price} &#8362;</span>
+          ${p.priceNote ? `<span class="product-item-badge">${esc(p.priceNote)}</span>` : ''}
+          ${p.badge ? `<span class="product-item-badge">${esc(p.badge)}</span>` : ''}
+        </div>
+        <div class="product-item-actions">
+          <button class="btn-move" onclick="moveProductInCategory(${globalIdx},-1)" title="העלי בקטגוריה" ${isFirstInCat ? 'disabled' : ''}>&#9650;</button>
+          <button class="btn-move" onclick="moveProductInCategory(${globalIdx},1)" title="הורידי בקטגוריה" ${isLastInCat ? 'disabled' : ''}>&#9660;</button>
+          <div class="pos-input-wrap" title="מיקום בקטגוריה ${esc(catLabel)}">
+            <label>#</label>
+            <input class="pos-input" type="number" min="1" max="${catTotal}" value="${catPos}" onchange="setProductCategoryPos(${globalIdx}, this.value)">
+          </div>
+          <button class="btn-preview" onclick="previewProduct(${globalIdx})" title="תצוגה מקדימה">&#128065;</button>
+          <button class="btn-edit" onclick="openForm(${globalIdx})" title="עריכה">&#9998;</button>
+          <button class="btn-delete" onclick="deleteProduct(${globalIdx})" title="מחיקה">&#128465;</button>
+        </div>
+      `;
+      return item;
+    }
+
     function renderProductList() {
       const list = document.getElementById('productList');
       const empty = document.getElementById('emptyState');
       list.innerHTML = '';
+
+      renderCategoryFilter();
 
       if (products.length === 0) { empty.style.display = 'block'; return; }
       empty.style.display = 'none';
@@ -714,43 +784,39 @@
       });
       const categoryTotals = {...categoryCounts};
 
-      products.forEach((p, i) => {
-        const imgs = p.images || (p.image ? [p.image] : []);
-        const rawThumb = imgs[0] || '';
-        const thumb = rawThumb ? (rawThumb.startsWith('http') ? rawThumb : `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${rawThumb}?v=${Date.now()}`) : 'images/logo.png';
-        const imgCount = imgs.length > 1 ? ` (${imgs.length} תמונות)` : '';
-        const catLabel = p.categoryLabel || p.category;
-        const catPos = categoryPositions[i];
-        const catTotal = categoryTotals[p.category];
-        const isFirstInCat = catPos === 1;
-        const isLastInCat = catPos === catTotal;
-        const item = document.createElement('div');
-        item.className = 'product-item';
-        item.innerHTML = `
-          <img src="${esc(thumb)}" alt="${esc(p.name)}" onerror="this.src='images/logo.png'">
-          <div class="product-item-info">
-            <h3>${esc(p.name)}${imgCount}</h3>
-            <p><span class="product-item-category-badge">${esc(catLabel)} ${catPos}/${catTotal}</span>${esc(p.description)}</p>
-          </div>
-          <div class="product-item-meta">
-            <span class="product-item-price">${p.maxPrice ? p.price + '-' + p.maxPrice : p.price} &#8362;</span>
-            ${p.priceNote ? `<span class="product-item-badge">${esc(p.priceNote)}</span>` : ''}
-            ${p.badge ? `<span class="product-item-badge">${esc(p.badge)}</span>` : ''}
-          </div>
-          <div class="product-item-actions">
-            <button class="btn-move" onclick="moveProductInCategory(${i},-1)" title="העלי בקטגוריה" ${isFirstInCat ? 'disabled' : ''}>&#9650;</button>
-            <button class="btn-move" onclick="moveProductInCategory(${i},1)" title="הורידי בקטגוריה" ${isLastInCat ? 'disabled' : ''}>&#9660;</button>
-            <div class="pos-input-wrap" title="מיקום בקטגוריה ${esc(catLabel)}">
-              <label>#</label>
-              <input class="pos-input" type="number" min="1" max="${catTotal}" value="${catPos}" onchange="setProductCategoryPos(${i}, this.value)">
-            </div>
-            <button class="btn-preview" onclick="previewProduct(${i})" title="תצוגה מקדימה">&#128065;</button>
-            <button class="btn-edit" onclick="openForm(${i})" title="עריכה">&#9998;</button>
-            <button class="btn-delete" onclick="deleteProduct(${i})" title="מחיקה">&#128465;</button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
+      if (currentCategoryFilter === 'all') {
+        // Group by category with section headers
+        const categoryOrder = [];
+        const seen = new Set();
+        products.forEach(p => { if (!seen.has(p.category)) { seen.add(p.category); categoryOrder.push(p.category); } });
+
+        categoryOrder.forEach(cat => {
+          const header = document.createElement('div');
+          header.className = 'category-section-header';
+          const catLabel = (products.find(p => p.category === cat) || {}).categoryLabel || CATEGORIES[cat] || cat;
+          header.innerHTML = `<h3>📂 ${esc(catLabel)}</h3><span class="count-badge">${categoryTotals[cat]} מוצרים</span>`;
+          list.appendChild(header);
+          products.forEach((p, i) => {
+            if (p.category !== cat) return;
+            list.appendChild(buildProductItemHTML(p, i, categoryPositions[i], categoryTotals[cat]));
+          });
+        });
+      } else {
+        // Show only products from this category
+        const filteredCount = categoryTotals[currentCategoryFilter] || 0;
+        if (filteredCount === 0) {
+          const msg = document.createElement('div');
+          msg.className = 'empty-state';
+          msg.style.display = 'block';
+          msg.innerHTML = '<p>אין מוצרים בקטגוריה הזו</p>';
+          list.appendChild(msg);
+          return;
+        }
+        products.forEach((p, i) => {
+          if (p.category !== currentCategoryFilter) return;
+          list.appendChild(buildProductItemHTML(p, i, categoryPositions[i], categoryTotals[p.category]));
+        });
+      }
     }
 
     // --- Debounced save: instant UI, save 1.5s after last move ---
