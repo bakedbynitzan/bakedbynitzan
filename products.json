@@ -39,19 +39,6 @@
     "badge": "פופולרי"
   },
   {
-    "id": 2,
-    "name": "עוגיות שוקולד חלב&בלונדי",
-    "category": "cookies",
-    "categoryLabel": "עוגיות",
-    "price": 95,
-    "description": "5 יח׳ עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים. קוטר 8",
-    "image": "images/product-1774255822948-50zyi-1.jpeg",
-    "images": [
-      "images/product-1774255822948-50zyi-1.jpeg"
-    ],
-    "badge": "פופולרי"
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -63,6 +50,19 @@
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
     ]
+  },
+  {
+    "id": 2,
+    "name": "עוגיות שוקולד חלב&בלונדי",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 95,
+    "description": "5 יח׳ עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים. קוטר 8",
+    "image": "images/product-1774255822948-50zyi-1.jpeg",
+    "images": [
+      "images/product-1774255822948-50zyi-1.jpeg"
+    ],
+    "badge": "פופולרי"
   },
   {
     "id": 4,
