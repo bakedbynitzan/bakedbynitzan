@@ -287,19 +287,6 @@
     ]
   },
   {
-    "id": 1774259226661,
-    "name": "מארז קאפקייקס",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 145,
-    "description": "12 יח׳ קאפקייקס שוקולד/וניל במילוי נוטלה וזילוף קרם וניל",
-    "image": "images/product-1774259224777-wfzqp-14.jpeg",
-    "images": [
-      "images/product-1774259224777-wfzqp-14.jpeg",
-      "images/product-1774726615016-kyqbs-14.jpeg"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -310,6 +297,19 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 1774259226661,
+    "name": "מארז קאפקייקס",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 145,
+    "description": "12 יח׳ קאפקייקס שוקולד/וניל במילוי נוטלה וזילוף קרם וניל",
+    "image": "images/product-1774259224777-wfzqp-14.jpeg",
+    "images": [
+      "images/product-1774259224777-wfzqp-14.jpeg",
+      "images/product-1774726615016-kyqbs-14.jpeg"
     ]
   },
   {
