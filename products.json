@@ -66,19 +66,6 @@
     "badge": "פופולרי"
   },
   {
-    "id": 12,
-    "name": "מארז דובאי",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 450,
-    "description": "בראוניז קוטר 16 בציפוי קדאיף פיסטוק,\n3 יח׳ קראמבל קוקיז פיסטוק,\n12 יח׳ מגולגלות דובאי,\n8 יחידות גלילי ופל במילוי דובאי וציפוי שוקולד חלב",
-    "image": "images/product-1774233037520.jpeg",
-    "images": [
-      "images/product-1774233037520.jpeg"
-    ],
-    "badge": "VIP"
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -90,6 +77,19 @@
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
     ]
+  },
+  {
+    "id": 12,
+    "name": "מארז דובאי",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 450,
+    "description": "בראוניז קוטר 16 בציפוי קדאיף פיסטוק,\n3 יח׳ קראמבל קוקיז פיסטוק,\n12 יח׳ מגולגלות דובאי,\n8 יחידות גלילי ופל במילוי דובאי וציפוי שוקולד חלב",
+    "image": "images/product-1774233037520.jpeg",
+    "images": [
+      "images/product-1774233037520.jpeg"
+    ],
+    "badge": "VIP"
   },
   {
     "id": 11,
