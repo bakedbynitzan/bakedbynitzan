@@ -144,18 +144,6 @@
     ]
   },
   {
-    "id": 8,
-    "name": "מארז מגולגלות ובראוניז",
-    "category": "boxes",
-    "categoryLabel": "מארזים",
-    "price": 170,
-    "description": "בראוניז פאדג׳ 16x16 עם מלח גס ונוטלה, 16 יחידות מגולגלות קקאו קינדר (ניתן להחליף למגולגלות בטעם אחר)",
-    "image": "images/box-brownies-megulgalot.png",
-    "images": [
-      "images/box-brownies-megulgalot.png"
-    ]
-  },
-  {
     "id": 1778075144159,
     "name": "ספיישל מגולגלות פרינגלס😍",
     "category": "cookies",
@@ -166,6 +154,18 @@
     "images": [
       "images/product-1778075139395-55jok-1.jpeg",
       "images/product-1778075142005-hucht-2.jpeg"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "מארז מגולגלות ובראוניז",
+    "category": "boxes",
+    "categoryLabel": "מארזים",
+    "price": 170,
+    "description": "בראוניז פאדג׳ 16x16 עם מלח גס ונוטלה, 16 יחידות מגולגלות קקאו קינדר (ניתן להחליף למגולגלות בטעם אחר)",
+    "image": "images/box-brownies-megulgalot.png",
+    "images": [
+      "images/box-brownies-megulgalot.png"
     ]
   },
   {
