@@ -58,6 +58,13 @@
     .btn-move:disabled { opacity: 0.3; cursor: not-allowed; }
     .btn-preview { background: #f0fff0; color: #008800; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
     .btn-preview:hover { background: #d8f0d8; }
+    .btn-archive, .btn-restore { border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; }
+    .btn-archive { background: #fff3e0; color: #b8860b; }
+    .btn-archive:hover { background: #ffe8c2; }
+    .btn-restore { background: #e8f5e9; color: #2e7d32; }
+    .btn-restore:hover { background: #d3ecd5; }
+    .product-item-archived { opacity: 0.65; background: #faf7ff; }
+    .product-item-archived .product-item-info h3::after { content: " (בארכיון)"; color: #7c5cbf; font-size: 0.75rem; font-weight: 500; }
     .pos-input-wrap { display: flex; align-items: center; gap: 4px; background: #f0f0f0; padding: 4px 8px; border-radius: 8px; height: 36px; }
     .pos-input-wrap label { font-size: 0.7rem; color: #666; }
     .pos-input { width: 38px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; font-family: inherit; text-align: center; }
@@ -714,13 +721,20 @@
       const filter = document.getElementById('categoryFilter');
       if (!filter) return;
       const counts = {};
-      products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
-      const total = products.length;
+      let archivedCount = 0;
+      products.forEach(p => {
+        if (p.archived) { archivedCount++; return; }
+        counts[p.category] = (counts[p.category] || 0) + 1;
+      });
+      const total = products.length - archivedCount;
       const cats = Object.keys(CATEGORIES).filter(c => counts[c] > 0);
       let html = `<button class="category-filter-btn ${currentCategoryFilter === 'all' ? 'active' : ''}" onclick="setCategoryFilter('all')">כל המוצרים <span class="count">(${total})</span></button>`;
       cats.forEach(c => {
         html += `<button class="category-filter-btn ${currentCategoryFilter === c ? 'active' : ''}" onclick="setCategoryFilter('${c}')">${esc(CATEGORIES[c])} <span class="count">(${counts[c]})</span></button>`;
       });
+      if (archivedCount > 0) {
+        html += `<button class="category-filter-btn ${currentCategoryFilter === 'archive' ? 'active' : ''}" onclick="setCategoryFilter('archive')" style="margin-right:auto;">🗄️ ארכיון <span class="count">(${archivedCount})</span></button>`;
+      }
       filter.innerHTML = html;
     }
 
@@ -729,21 +743,51 @@
       renderProductList();
     }
 
-    function buildProductItemHTML(p, globalIdx, catPos, catTotal) {
+    function buildProductItemHTML(p, globalIdx, pos, total, scope) {
+      scope = scope || 'category';
       const imgs = p.images || (p.image ? [p.image] : []);
       const rawThumb = imgs[0] || '';
       const thumb = rawThumb ? (rawThumb.startsWith('http') ? rawThumb : `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${rawThumb}?v=${Date.now()}`) : 'images/logo.png';
       const imgCount = imgs.length > 1 ? ` (${imgs.length} תמונות)` : '';
       const catLabel = p.categoryLabel || p.category;
-      const isFirstInCat = catPos === 1;
-      const isLastInCat = catPos === catTotal;
       const item = document.createElement('div');
-      item.className = 'product-item';
+      item.className = 'product-item' + (p.archived ? ' product-item-archived' : '');
+
+      let actions;
+      if (scope === 'archive') {
+        actions = `
+          <button class="btn-restore" onclick="restoreProduct(${globalIdx})" title="החזרה מהארכיון">&#9851;</button>
+          <button class="btn-preview" onclick="previewProduct(${globalIdx})" title="תצוגה מקדימה">&#128065;</button>
+          <button class="btn-edit" onclick="openForm(${globalIdx})" title="עריכה">&#9998;</button>
+          <button class="btn-delete" onclick="deleteProduct(${globalIdx})" title="מחיקה לצמיתות">&#128465;</button>
+        `;
+      } else {
+        const isFirst = pos === 1;
+        const isLast = pos === total;
+        const moveUp = scope === 'all' ? `moveProductGlobal(${globalIdx},-1)` : `moveProductInCategory(${globalIdx},-1)`;
+        const moveDown = scope === 'all' ? `moveProductGlobal(${globalIdx},1)` : `moveProductInCategory(${globalIdx},1)`;
+        const setPos = scope === 'all' ? `setProductGlobalPos(${globalIdx}, this.value)` : `setProductCategoryPos(${globalIdx}, this.value)`;
+        const posTitle = scope === 'all' ? 'מיקום באתר (מבין כל המוצרים)' : `מיקום בקטגוריה ${esc(catLabel)}`;
+        actions = `
+          <button class="btn-move" onclick="${moveUp}" title="העלי" ${isFirst ? 'disabled' : ''}>&#9650;</button>
+          <button class="btn-move" onclick="${moveDown}" title="הורידי" ${isLast ? 'disabled' : ''}>&#9660;</button>
+          <div class="pos-input-wrap" title="${posTitle}">
+            <label>#</label>
+            <input class="pos-input" type="number" min="1" max="${total}" value="${pos}" onchange="${setPos}">
+          </div>
+          <button class="btn-preview" onclick="previewProduct(${globalIdx})" title="תצוגה מקדימה">&#128065;</button>
+          <button class="btn-edit" onclick="openForm(${globalIdx})" title="עריכה">&#9998;</button>
+          <button class="btn-archive" onclick="archiveProduct(${globalIdx})" title="העברה לארכיון">&#128230;</button>
+          <button class="btn-delete" onclick="deleteProduct(${globalIdx})" title="מחיקה">&#128465;</button>
+        `;
+      }
+
+      const posBadge = scope === 'archive' ? '' : ` ${pos}/${total}`;
       item.innerHTML = `
         <img src="${esc(thumb)}" alt="${esc(p.name)}" onerror="this.src='images/logo.png'">
         <div class="product-item-info">
           <h3>${esc(p.name)}${imgCount}</h3>
-          <p><span class="product-item-category-badge">${esc(catLabel)} ${catPos}/${catTotal}</span>${esc(p.description)}</p>
+          <p><span class="product-item-category-badge">${esc(catLabel)}${posBadge}</span>${esc(p.description)}</p>
         </div>
         <div class="product-item-meta">
           <span class="product-item-price">${p.maxPrice ? p.price + '-' + p.maxPrice : p.price} &#8362;</span>
@@ -751,15 +795,7 @@
           ${p.badge ? `<span class="product-item-badge">${esc(p.badge)}</span>` : ''}
         </div>
         <div class="product-item-actions">
-          <button class="btn-move" onclick="moveProductInCategory(${globalIdx},-1)" title="העלי בקטגוריה" ${isFirstInCat ? 'disabled' : ''}>&#9650;</button>
-          <button class="btn-move" onclick="moveProductInCategory(${globalIdx},1)" title="הורידי בקטגוריה" ${isLastInCat ? 'disabled' : ''}>&#9660;</button>
-          <div class="pos-input-wrap" title="מיקום בקטגוריה ${esc(catLabel)}">
-            <label>#</label>
-            <input class="pos-input" type="number" min="1" max="${catTotal}" value="${catPos}" onchange="setProductCategoryPos(${globalIdx}, this.value)">
-          </div>
-          <button class="btn-preview" onclick="previewProduct(${globalIdx})" title="תצוגה מקדימה">&#128065;</button>
-          <button class="btn-edit" onclick="openForm(${globalIdx})" title="עריכה">&#9998;</button>
-          <button class="btn-delete" onclick="deleteProduct(${globalIdx})" title="מחיקה">&#128465;</button>
+          ${actions}
         </div>
       `;
       return item;
@@ -775,46 +811,45 @@
       if (products.length === 0) { empty.style.display = 'block'; return; }
       empty.style.display = 'none';
 
-      // Compute category position for each product (1-based, within its category)
-      const categoryCounts = {};
-      const categoryPositions = products.map(p => {
-        const cat = p.category;
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-        return categoryCounts[cat];
-      });
-      const categoryTotals = {...categoryCounts};
+      const showEmptyMsg = (text) => {
+        const msg = document.createElement('div');
+        msg.className = 'empty-state';
+        msg.style.display = 'block';
+        msg.innerHTML = `<p>${text}</p>`;
+        list.appendChild(msg);
+      };
+
+      // ── תצוגת ארכיון ──
+      if (currentCategoryFilter === 'archive') {
+        const archived = [];
+        products.forEach((p, i) => { if (p.archived) archived.push(i); });
+        if (archived.length === 0) { showEmptyMsg('הארכיון ריק'); return; }
+        const note = document.createElement('div');
+        note.className = 'category-section-header';
+        note.innerHTML = `<h3>🗄️ ארכיון</h3><span class="count-badge">${archived.length} מוצרים</span>`;
+        list.appendChild(note);
+        archived.forEach((idx, k) => {
+          list.appendChild(buildProductItemHTML(products[idx], idx, k + 1, archived.length, 'archive'));
+        });
+        return;
+      }
+
+      // אינדקסים של מוצרים פעילים (לא בארכיון), לפי סדר המערך = הסדר באתר
+      const visible = [];
+      products.forEach((p, i) => { if (!p.archived) visible.push(i); });
 
       if (currentCategoryFilter === 'all') {
-        // Group by category with section headers
-        const categoryOrder = [];
-        const seen = new Set();
-        products.forEach(p => { if (!seen.has(p.category)) { seen.add(p.category); categoryOrder.push(p.category); } });
-
-        categoryOrder.forEach(cat => {
-          const header = document.createElement('div');
-          header.className = 'category-section-header';
-          const catLabel = (products.find(p => p.category === cat) || {}).categoryLabel || CATEGORIES[cat] || cat;
-          header.innerHTML = `<h3>📂 ${esc(catLabel)}</h3><span class="count-badge">${categoryTotals[cat]} מוצרים</span>`;
-          list.appendChild(header);
-          products.forEach((p, i) => {
-            if (p.category !== cat) return;
-            list.appendChild(buildProductItemHTML(p, i, categoryPositions[i], categoryTotals[cat]));
-          });
+        // רשימה שטוחה בסדר הגלובלי (בדיוק כפי שמופיע באתר ב"הכל")
+        if (visible.length === 0) { showEmptyMsg('כל המוצרים נמצאים בארכיון'); return; }
+        visible.forEach((idx, k) => {
+          list.appendChild(buildProductItemHTML(products[idx], idx, k + 1, visible.length, 'all'));
         });
       } else {
-        // Show only products from this category
-        const filteredCount = categoryTotals[currentCategoryFilter] || 0;
-        if (filteredCount === 0) {
-          const msg = document.createElement('div');
-          msg.className = 'empty-state';
-          msg.style.display = 'block';
-          msg.innerHTML = '<p>אין מוצרים בקטגוריה הזו</p>';
-          list.appendChild(msg);
-          return;
-        }
-        products.forEach((p, i) => {
-          if (p.category !== currentCategoryFilter) return;
-          list.appendChild(buildProductItemHTML(p, i, categoryPositions[i], categoryTotals[p.category]));
+        // תצוגת קטגוריה בודדת (ללא מוצרים בארכיון)
+        const catIndices = visible.filter(i => products[i].category === currentCategoryFilter);
+        if (catIndices.length === 0) { showEmptyMsg('אין מוצרים בקטגוריה הזו'); return; }
+        catIndices.forEach((idx, k) => {
+          list.appendChild(buildProductItemHTML(products[idx], idx, k + 1, catIndices.length, 'category'));
         });
       }
     }
@@ -850,7 +885,7 @@
     // Move within category - instant UI update, debounced save
     function moveProductInCategory(index, direction) {
       const cat = products[index].category;
-      const sameCatIndices = products.map((p, i) => p.category === cat ? i : -1).filter(i => i !== -1);
+      const sameCatIndices = products.map((p, i) => (p.category === cat && !p.archived) ? i : -1).filter(i => i !== -1);
       const posInCat = sameCatIndices.indexOf(index);
       const targetPos = posInCat + direction;
       if (targetPos < 0 || targetPos >= sameCatIndices.length) return;
@@ -862,23 +897,66 @@
       debouncedSaveProducts();
     }
 
-    // Set product position by typing number
+    // Set product position by typing number (within category)
     function setProductCategoryPos(index, newPosStr) {
       const newPos = parseInt(newPosStr);
       if (isNaN(newPos) || newPos < 1) { renderProductList(); return; }
       const cat = products[index].category;
-      const sameCatIndices = products.map((p, i) => p.category === cat ? i : -1).filter(i => i !== -1);
+      const sameCatIndices = products.map((p, i) => (p.category === cat && !p.archived) ? i : -1).filter(i => i !== -1);
       if (newPos > sameCatIndices.length) { renderProductList(); return; }
       const targetGlobal = sameCatIndices[newPos - 1];
       if (targetGlobal === index) return;
       // Remove from current position
       const item = products.splice(index, 1)[0];
       // Recompute target index after removal
-      const newSameCatIndices = products.map((p, i) => p.category === cat ? i : -1).filter(i => i !== -1);
+      const newSameCatIndices = products.map((p, i) => (p.category === cat && !p.archived) ? i : -1).filter(i => i !== -1);
       const insertAt = newPos - 1 < newSameCatIndices.length ? newSameCatIndices[newPos - 1] : products.length;
       products.splice(insertAt, 0, item);
       renderProductList();
       debouncedSaveProducts();
+    }
+
+    // Move across the whole catalog ("all" view) - controls the order on the site
+    function moveProductGlobal(index, direction) {
+      const visible = products.map((p, i) => !p.archived ? i : -1).filter(i => i !== -1);
+      const pos = visible.indexOf(index);
+      const targetPos = pos + direction;
+      if (targetPos < 0 || targetPos >= visible.length) return;
+      const targetGlobal = visible[targetPos];
+      const temp = products[index];
+      products[index] = products[targetGlobal];
+      products[targetGlobal] = temp;
+      renderProductList();
+      debouncedSaveProducts();
+    }
+
+    // Set global position by typing number ("all" view)
+    function setProductGlobalPos(index, newPosStr) {
+      const newPos = parseInt(newPosStr);
+      if (isNaN(newPos) || newPos < 1) { renderProductList(); return; }
+      const visible = products.map((p, i) => !p.archived ? i : -1).filter(i => i !== -1);
+      if (newPos > visible.length) { renderProductList(); return; }
+      if (visible[newPos - 1] === index) return;
+      const item = products.splice(index, 1)[0];
+      const newVisible = products.map((p, i) => !p.archived ? i : -1).filter(i => i !== -1);
+      const insertAt = newPos - 1 < newVisible.length ? newVisible[newPos - 1] : products.length;
+      products.splice(insertAt, 0, item);
+      renderProductList();
+      debouncedSaveProducts();
+    }
+
+    // Archive / restore
+    function archiveProduct(index) {
+      products[index].archived = true;
+      renderProductList();
+      debouncedSaveProducts();
+      showToast('📦 הועבר לארכיון');
+    }
+    function restoreProduct(index) {
+      delete products[index].archived;
+      renderProductList();
+      debouncedSaveProducts();
+      showToast('♻️ הוחזר מהארכיון');
     }
 
     // Backwards-compat (still used elsewhere)
@@ -1074,7 +1152,8 @@
           images: allImages,
           badge: badge || undefined,
           maxPrice: maxPrice || undefined,
-          priceNote: priceNote || undefined
+          priceNote: priceNote || undefined,
+          archived: editingIndex !== null ? (products[editingIndex].archived || undefined) : undefined
         };
 
         if (editingIndex !== null) {

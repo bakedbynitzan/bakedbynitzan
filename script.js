@@ -280,9 +280,10 @@ function renderProducts(filter = 'all') {
   if (loader) loader.remove();
   grid.innerHTML = '';
 
+  const visible = products.filter(p => !p.archived);
   const filtered = filter === 'all'
-    ? products
-    : products.filter(p => p.category === filter);
+    ? visible
+    : visible.filter(p => p.category === filter);
 
   filtered.forEach((product, i) => {
     const card = createProductCard(product);
@@ -387,7 +388,7 @@ function openMobileViewer(product) {
   info.innerHTML = `
     <div class="mv-category" style="font-size:0.8rem;letter-spacing:0.1em;margin-bottom:6px;">${escHtml(product.categoryLabel)}</div>
     <h3 class="mv-title" style="font-family:'Frank Ruhl Libre',serif;font-size:1.5rem;font-weight:900;margin:0 0 12px;">${escHtml(product.name)}</h3>
-    <p class="mv-desc" style="font-size:0.95rem;line-height:1.7;margin:0 0 20px;">${escHtml(product.description)}</p>
+    <p class="mv-desc" style="font-size:0.95rem;line-height:1.7;margin:0 0 20px;white-space:pre-line;">${escHtml(product.description)}</p>
     <div class="mv-price" style="font-family:'Frank Ruhl Libre',serif;font-size:1.8rem;font-weight:900;margin-bottom:20px;">${formatPriceHTML(product, 'large')}</div>
     <a href="${createWhatsAppLink(product.name)}" target="_blank" rel="noopener" class="mv-order-btn"
        style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;background:#000;color:#fff;text-decoration:none;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Heebo',sans-serif;">

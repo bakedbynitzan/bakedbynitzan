@@ -1,0 +1,77 @@
+/* ============================================================
+   ספיישל ט"ו באב — אפקט זמני (לבבות נופלים + כניסה + באדג')
+   קובץ עצמאי ובטוח להסרה. מופעל רק בחלון התאריכים שמוגדר ב-holiday.js.
+   מכבד את מצב "עצירת אנימציות" (html.a11y-no-animations) ואת prefers-reduced-motion.
+   ============================================================ */
+
+/* ── שכבת הלבבות הנופלים ── */
+#tubav-hearts {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 800; /* מעל התוכן, מתחת ל-navbar/מודאל/עוגיות */
+}
+.tubav-heart {
+  position: absolute;
+  top: 0;
+  line-height: 1;
+  opacity: 0;
+  will-change: transform, opacity;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  animation-name: tubav-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes tubav-fall {
+  0%   { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; }
+  8%   { opacity: var(--tubav-opacity, 0.7); }
+  92%  { opacity: var(--tubav-opacity, 0.7); }
+  100% { transform: translateY(112vh) translateX(var(--tubav-drift, 20px)) rotate(var(--tubav-spin, 60deg)); opacity: 0; }
+}
+
+/* ── באדג' צף מתמשך ── */
+#tubav-badge {
+  position: fixed;
+  bottom: 96px;
+  right: 20px;
+  z-index: 1450;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 10, 10, 0.92);
+  border: 1px solid #c8a97e;
+  border-radius: 999px;
+  padding: 8px 8px 8px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  max-width: calc(100vw - 40px);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+#tubav-badge.tubav-badge-show { opacity: 1; transform: translateY(0); }
+.tubav-badge-link {
+  color: #e8dcc8;
+  text-decoration: none;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.tubav-badge-link:hover { color: #fff; }
+.tubav-badge-heart { filter: drop-shadow(0 0 4px rgba(200, 169, 126, 0.6)); }
+.tubav-badge-close {
+  background: none;
+  border: none;
+  color: #c8a97e;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.tubav-badge-close:hover { color: #fff; }
+
+@media (max-width: 768px) {
+  #tubav-badge { bottom: 150px; right: 12px; padding: 7px 7px 7px 12px; }
+  .tubav-badge-link { font-size: 0.82rem; white-space: normal; }
+}
