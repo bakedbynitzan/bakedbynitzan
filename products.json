@@ -36,7 +36,8 @@
     "images": [
       "images/product-1774256690606-l69sk-5.jpeg"
     ],
-    "badge": "פופולרי"
+    "badge": "פופולרי",
+    "archived": true
   },
   {
     "id": 1,
