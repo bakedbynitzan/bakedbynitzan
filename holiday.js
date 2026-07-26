@@ -13,9 +13,6 @@
   var now = new Date();
   if (now < START || now >= END) return;
 
-  // לא מציגים למנהלת בפאנל הניהול
-  try { if (localStorage.getItem('gh_token')) return; } catch (e) {}
-
   // גווני אדום/ורוד ללבבות
   var COLORS = ['#e11d48', '#dc2626', '#e63950', '#ff4d6d', '#ff5c8a', '#c81e3a', '#ff2d55'];
   var heartsLayer = null;
