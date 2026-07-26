@@ -114,21 +114,14 @@
     }
     if (!card) return;
 
-    // תווית "ספיישל" — זהה בעיצוב לתווית "פופולרי"
+    // תווית "ספיישל" — זהה בעיצוב לתווית "פופולרי".
+    // המיקום בקטלוג נקבע לפי הסדר שנקבע בפאנל הניהול (ללא הזזה כפויה).
     if (!card.querySelector('.tubav-special-tag')) {
       var tag = document.createElement('span');
       tag.className = 'product-card-badge tubav-special-tag';
       tag.textContent = 'ספיישל';
       var content = card.querySelector('.product-card-content');
       card.insertBefore(tag, content || card.firstChild);
-    }
-
-    // מיקום במרכז השורה הראשונה (אינדקס 1 — האמצע ב-RTL בפריסת 3 עמודות)
-    var target = 1;
-    var idx = Array.prototype.indexOf.call(grid.children, card);
-    if (grid.children.length > target && idx !== target) {
-      var ref = idx < target ? (grid.children[target + 1] || null) : grid.children[target];
-      grid.insertBefore(card, ref);
     }
   }
 
