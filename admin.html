@@ -114,9 +114,11 @@
     .image-upload-area p { color: #999; font-size: 0.9rem; }
     .image-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
     .images-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .image-thumb { position: relative; width: 90px; height: 90px; border-radius: 8px; overflow: hidden; border: 2px solid #eee; }
+    .image-thumb { position: relative; width: 90px; height: 90px; border-radius: 8px; overflow: hidden; border: 2px solid #eee; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: transform 0.12s, box-shadow 0.12s, opacity 0.12s; }
     .image-thumb.first-img { border-color: #000; }
-    .image-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .image-thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+    .image-thumb.dragging { opacity: 0.5; cursor: grabbing; transform: scale(1.06); box-shadow: 0 6px 16px rgba(0,0,0,0.25); z-index: 5; }
+    .image-thumb.drag-over { border-color: #000; outline: 2px dashed #000; outline-offset: 2px; }
     .image-thumb .remove-img { position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
     .image-thumb .move-img { position: absolute; bottom: 2px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
     .image-thumb .move-img.move-right { right: 2px; }
@@ -455,6 +457,7 @@
       </div>
       <div class="form-group">
         <label>תמונות * (אפשר כמה)</label>
+        <p style="font-size:0.78rem;color:#999;margin:-4px 0 8px;">גררי תמונה כדי לשנות את הסדר · הראשונה היא התמונה הראשית</p>
         <div id="imagesContainer"></div>
         <div class="image-upload-area" id="imageUploadArea">
           <p>+ הוסיפי תמונה</p>
@@ -513,8 +516,9 @@
     let products = [];
     let productsSha = null;
     let editingIndex = null;
-    let pendingImages = [];  // { file, dataUrl, uploaded: false }
-    let existingImages = []; // already-uploaded paths
+    // רשימת תמונות מאוחדת בטופס, לפי הסדר להצגה/שמירה:
+    //   { type: 'existing', src }  |  { type: 'pending', file, dataUrl }
+    let formImages = [];
 
     // --- Auth ---
     document.getElementById('loginBtn').addEventListener('click', login);
@@ -971,8 +975,7 @@
 
     function openForm(index = null) {
       editingIndex = index;
-      pendingImages = [];
-      existingImages = [];
+      formImages = [];
       const p = index !== null ? products[index] : null;
 
       document.getElementById('formTitle').textContent = p ? 'עריכת מוצר' : 'מוצר חדש';
@@ -985,7 +988,8 @@
       document.getElementById('prodBadge').value = p ? (p.badge || '') : '';
 
       if (p) {
-        existingImages = p.images ? [...p.images] : (p.image ? [p.image] : []);
+        const imgs = p.images ? [...p.images] : (p.image ? [p.image] : []);
+        formImages = imgs.map(src => ({ type: 'existing', src }));
       }
       renderImagesList();
 
@@ -1005,62 +1009,91 @@
     function renderImagesList() {
       const container = document.getElementById('imagesContainer');
       container.innerHTML = '';
-      const allImgs = existingImages.map((src, i) => ({ type: 'existing', index: i, src: rawUrl(src) }))
-        .concat(pendingImages.map((img, i) => ({ type: 'pending', index: i, src: img.dataUrl })));
-
-      if (allImgs.length === 0) return;
+      if (formImages.length === 0) return;
 
       const list = document.createElement('div');
       list.className = 'images-list';
 
-      allImgs.forEach((img, globalIdx) => {
-        const isFirst = globalIdx === 0;
-        const isLast = globalIdx === allImgs.length - 1;
-        const moveLeftBtn = globalIdx > 0 ? `<button class="move-img move-left" onclick="moveImage(${globalIdx},-1)" title="הזז שמאלה">&#8594;</button>` : '';
-        const moveRightBtn = !isLast ? `<button class="move-img move-right" onclick="moveImage(${globalIdx},1)" title="הזז ימינה">&#8592;</button>` : '';
+      formImages.forEach((it, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === formImages.length - 1;
+        const src = it.type === 'existing' ? rawUrl(it.src) : it.dataUrl;
+        const moveLeftBtn = !isFirst ? `<button class="move-img move-left" onclick="moveImage(${idx},-1)" title="הזז שמאלה">&#8594;</button>` : '';
+        const moveRightBtn = !isLast ? `<button class="move-img move-right" onclick="moveImage(${idx},1)" title="הזז ימינה">&#8592;</button>` : '';
         const firstLabel = isFirst ? '<span class="image-first-label">ראשית</span>' : '';
-        const removeBtn = img.type === 'existing'
-          ? `<button class="remove-img" onclick="removeExistingImage(${img.index})">&times;</button>`
-          : `<button class="remove-img" onclick="removePendingImage(${img.index})">&times;</button>`;
-        list.innerHTML += `<div class="image-thumb${isFirst ? ' first-img' : ''}"><img src="${img.src}">${removeBtn}${moveLeftBtn}${moveRightBtn}${firstLabel}</div>`;
+        const thumb = document.createElement('div');
+        thumb.className = 'image-thumb' + (isFirst ? ' first-img' : '');
+        thumb.dataset.idx = idx;
+        thumb.innerHTML = `<img src="${src}" draggable="false"><button class="remove-img" onclick="removeImage(${idx})">&times;</button>${moveLeftBtn}${moveRightBtn}${firstLabel}`;
+        thumb.addEventListener('pointerdown', onThumbPointerDown);
+        thumb.addEventListener('pointermove', onThumbPointerMove);
+        thumb.addEventListener('pointerup', onThumbPointerUp);
+        thumb.addEventListener('pointercancel', onThumbPointerUp);
+        list.appendChild(thumb);
       });
 
       container.appendChild(list);
     }
 
-    function moveImage(globalIdx, direction) {
-      const totalExisting = existingImages.length;
-      const newIdx = globalIdx + direction;
-      const totalAll = totalExisting + pendingImages.length;
-      if (newIdx < 0 || newIdx >= totalAll) return;
+    // הזזה עם חצים (גיבוי לגרירה)
+    function moveImage(idx, direction) {
+      const to = idx + direction;
+      if (to < 0 || to >= formImages.length) return;
+      reorderImage(idx, to);
+    }
 
-      function getItem(idx) {
-        if (idx < totalExisting) return { type: 'existing', value: existingImages[idx] };
-        return { type: 'pending', value: pendingImages[idx - totalExisting] };
-      }
-      function setItem(idx, item) {
-        if (item.type === 'existing') {
-          if (idx < totalExisting) existingImages[idx] = item.value;
-          else { existingImages.push(item.value); }
-        } else {
-          if (idx >= totalExisting) pendingImages[idx - totalExisting] = item.value;
-          else { pendingImages.unshift(item.value); }
-        }
-      }
-
-      const allArr = existingImages.map(v => ({ type: 'existing', value: v }))
-        .concat(pendingImages.map(v => ({ type: 'pending', value: v })));
-      const temp = allArr[globalIdx];
-      allArr[globalIdx] = allArr[newIdx];
-      allArr[newIdx] = temp;
-
-      existingImages = allArr.filter(a => a.type === 'existing').map(a => a.value);
-      pendingImages = allArr.filter(a => a.type === 'pending').map(a => a.value);
+    // הזזת תמונה ממקום למקום (גם עבור גרירה)
+    function reorderImage(from, to) {
+      if (from === to || from < 0 || to < 0 || from >= formImages.length || to >= formImages.length) return;
+      const item = formImages.splice(from, 1)[0];
+      formImages.splice(to, 0, item);
       renderImagesList();
     }
 
-    function removeExistingImage(i) { existingImages.splice(i, 1); renderImagesList(); }
-    function removePendingImage(i) { pendingImages.splice(i, 1); renderImagesList(); }
+    function removeImage(i) { formImages.splice(i, 1); renderImagesList(); }
+
+    // ── גרירה לשינוי סדר (עכבר + מגע) ──
+    let imgDrag = null;
+    function thumbAtPoint(x, y) {
+      const els = document.elementsFromPoint(x, y) || [];
+      for (const el of els) {
+        const t = el.closest && el.closest('.image-thumb');
+        if (t) return t;
+      }
+      return null;
+    }
+    function clearDragMarks() {
+      document.querySelectorAll('.image-thumb').forEach(t => {
+        t.classList.remove('dragging');
+        t.classList.remove('drag-over');
+      });
+    }
+    function onThumbPointerDown(e) {
+      if (e.target.closest('button')) return; // כפתורים ממשיכים לעבוד רגיל
+      const thumb = e.currentTarget;
+      e.preventDefault();
+      imgDrag = { from: parseInt(thumb.dataset.idx), pointerId: e.pointerId };
+      try { thumb.setPointerCapture(e.pointerId); } catch (err) {}
+      thumb.classList.add('dragging');
+    }
+    function onThumbPointerMove(e) {
+      if (!imgDrag) return;
+      e.preventDefault();
+      const over = thumbAtPoint(e.clientX, e.clientY);
+      document.querySelectorAll('.image-thumb').forEach(t => t.classList.remove('drag-over'));
+      if (over && parseInt(over.dataset.idx) !== imgDrag.from) over.classList.add('drag-over');
+    }
+    function onThumbPointerUp(e) {
+      if (!imgDrag) return;
+      const from = imgDrag.from;
+      const over = thumbAtPoint(e.clientX, e.clientY);
+      imgDrag = null;
+      clearDragMarks();
+      if (over) {
+        const to = parseInt(over.dataset.idx);
+        if (!isNaN(to) && to !== from) reorderImage(from, to);
+      }
+    }
 
     function compressImage(file, maxWidth = 800, quality = 0.75) {
       return new Promise((resolve) => {
@@ -1090,7 +1123,7 @@
       const files = Array.from(e.target.files);
       files.forEach(async file => {
         const compressed = await compressImage(file);
-        pendingImages.push(compressed);
+        formImages.push({ type: 'pending', file: compressed.file, dataUrl: compressed.dataUrl });
         renderImagesList();
       });
       e.target.value = '';
@@ -1107,31 +1140,37 @@
       const badge = document.getElementById('prodBadge').value.trim();
 
       if (!name || !category || !price) { showToast('נא למלא שם, קטגוריה ומחיר'); return; }
-      if (existingImages.length === 0 && pendingImages.length === 0) { showToast('נא להעלות לפחות תמונה אחת'); return; }
+      if (formImages.length === 0) { showToast('נא להעלות לפחות תמונה אחת'); return; }
 
       const saveBtn = document.getElementById('saveBtn');
       saveBtn.disabled = true;
       saveBtn.textContent = 'מעלה תמונות...';
 
       try {
-        const uploadedPaths = [];
+        // בונים את רשימת התמונות לפי הסדר בטופס (כולל גרירה), ומעלים רק חדשות
+        const allImages = [];
         const failedUploads = [];
+        const pendingCount = formImages.filter(it => it.type === 'pending').length;
+        let uploadedCount = 0;
 
-        for (let i = 0; i < pendingImages.length; i++) {
-          saveBtn.textContent = `מעלה תמונה ${i + 1}/${pendingImages.length}...`;
+        for (let i = 0; i < formImages.length; i++) {
+          const it = formImages[i];
+          if (it.type === 'existing') { allImages.push(it.src); continue; }
+          uploadedCount++;
+          saveBtn.textContent = `מעלה תמונה ${uploadedCount}/${pendingCount}...`;
           try {
-            const path = await uploadImageToGithub(pendingImages[i].file);
-            uploadedPaths.push(path);
+            const path = await uploadImageToGithub(it.file);
+            allImages.push(path);
           } catch (uploadErr) {
-            console.error(`Image ${i + 1} upload failed:`, uploadErr);
-            failedUploads.push(i + 1);
+            console.error(`Image ${uploadedCount} upload failed:`, uploadErr);
+            failedUploads.push(uploadedCount);
           }
-          if (i < pendingImages.length - 1) {
+          if (uploadedCount < pendingCount) {
             await new Promise(r => setTimeout(r, 500));
           }
         }
 
-        if (failedUploads.length > 0 && uploadedPaths.length === 0 && existingImages.length === 0) {
+        if (allImages.length === 0) {
           showToast(`כל התמונות נכשלו בהעלאה! בדקי את המפתח.`);
           saveBtn.disabled = false;
           saveBtn.textContent = 'שמירה';
@@ -1139,10 +1178,8 @@
         }
 
         if (failedUploads.length > 0) {
-          showToast(`${failedUploads.length} תמונות נכשלו, ${uploadedPaths.length} הועלו בהצלחה`);
+          showToast(`${failedUploads.length} תמונות נכשלו, השאר נשמרו`);
         }
-
-        const allImages = [...existingImages, ...uploadedPaths];
 
         const productData = {
           id: editingIndex !== null ? products[editingIndex].id : Date.now(),
