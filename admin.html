@@ -121,15 +121,21 @@
     .image-thumb.first-img { border-color: #000; }
     .image-thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
     .image-thumb.dragging { opacity: 0.28; }
-    .drag-clone { position: fixed; z-index: 9999; pointer-events: none; border-radius: 8px; overflow: hidden; border: 2px solid #000; box-shadow: 0 12px 28px rgba(0,0,0,0.35); transform: scale(1.08); opacity: 0.96; }
+    .image-thumb.drop-target { transform: scale(0.9); outline: 2px dashed #000; outline-offset: 2px; }
+    .drag-clone { position: fixed; z-index: 9999; pointer-events: none; border-radius: 8px; overflow: hidden; border: 2px solid #000; box-shadow: 0 12px 28px rgba(0,0,0,0.35); opacity: 0.96; transition: none; }
     .drag-clone img { width: 100%; height: 100%; object-fit: cover; }
     .drag-clone button, .drag-clone .image-first-label { display: none; }
     /* תצוגה מקדימה גדולה של תמונה */
     #imgPreviewOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 24px; }
     #imgPreviewOverlay.active { display: flex; }
     #imgPreviewOverlay img { max-width: 92vw; max-height: 88vh; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); object-fit: contain; }
-    .img-preview-close { position: absolute; top: 18px; left: 18px; width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .img-preview-close { position: absolute; top: 18px; left: 18px; width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
     .img-preview-close:hover { background: rgba(255,255,255,0.3); }
+    .img-preview-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 2rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
+    .img-preview-nav:hover { background: rgba(255,255,255,0.3); }
+    .img-preview-prev { right: 18px; }
+    .img-preview-next { left: 18px; }
+    .img-preview-counter { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.9rem; background: rgba(0,0,0,0.45); padding: 4px 14px; border-radius: 20px; }
     .image-thumb .remove-img { position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
     .image-thumb .move-img { position: absolute; bottom: 2px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
     .image-thumb .move-img.move-right { right: 2px; }
@@ -1027,15 +1033,12 @@
 
       formImages.forEach((it, idx) => {
         const isFirst = idx === 0;
-        const isLast = idx === formImages.length - 1;
         const src = it.type === 'existing' ? rawUrl(it.src) : it.dataUrl;
-        const moveLeftBtn = !isFirst ? `<button class="move-img move-left" onclick="moveImage(${idx},-1)" title="הזז שמאלה">&#8594;</button>` : '';
-        const moveRightBtn = !isLast ? `<button class="move-img move-right" onclick="moveImage(${idx},1)" title="הזז ימינה">&#8592;</button>` : '';
         const firstLabel = isFirst ? '<span class="image-first-label">ראשית</span>' : '';
         const thumb = document.createElement('div');
         thumb.className = 'image-thumb' + (isFirst ? ' first-img' : '');
         thumb.dataset.idx = idx;
-        thumb.innerHTML = `<img src="${src}" draggable="false"><button class="remove-img" onclick="removeImage(${idx})">&times;</button>${moveLeftBtn}${moveRightBtn}${firstLabel}`;
+        thumb.innerHTML = `<img src="${src}" draggable="false"><button class="remove-img" onclick="removeImage(${idx})">&times;</button>${firstLabel}`;
         thumb.addEventListener('pointerdown', onThumbPointerDown);
         list.appendChild(thumb);
       });
@@ -1043,53 +1046,38 @@
       container.appendChild(list);
     }
 
-    // הזזה עם חצים (גיבוי לגרירה)
-    function moveImage(idx, direction) {
-      const to = idx + direction;
-      if (to < 0 || to >= formImages.length) return;
-      reorderImage(idx, to);
-    }
-
-    // הזזת תמונה ממקום למקום (גם עבור גרירה)
-    function reorderImage(from, to) {
-      if (from === to || from < 0 || to < 0 || from >= formImages.length || to >= formImages.length) return;
-      const item = formImages.splice(from, 1)[0];
-      formImages.splice(to, 0, item);
-      renderImagesList();
-    }
-
     function removeImage(i) { formImages.splice(i, 1); renderImagesList(); }
 
     // ── גרירה חלקה לשינוי סדר (עכבר + מגע) + לחיצה לתצוגה מקדימה ──
-    const DRAG_THRESHOLD = 6; // פיקסלים לפני שמתחילים גרירה (מבדיל בין לחיצה לגרירה)
+    // בזמן הגרירה ה-DOM נשאר יציב (בלי ריצוד): רק ה"עותק" עוקב אחרי הסמן,
+    // והתמונה שמעליה מסומנת כיעד. שינוי הסדר בפועל נעשה רק בשחרור.
+    const DRAG_THRESHOLD = 6;
     let imgDrag = null;
 
     function thumbAtPoint(x, y) {
       const els = document.elementsFromPoint(x, y) || [];
       for (const el of els) {
         const t = el.closest && el.closest('.image-thumb');
-        if (t) return t;
+        if (t && !t.classList.contains('drag-clone')) return t;
       }
       return null;
     }
 
     function onThumbPointerDown(e) {
-      if (e.target.closest('button')) return; // כפתורים (מחיקה/חצים) ממשיכים כרגיל
-      if (e.button !== undefined && e.button !== 0) return; // רק לחצן ראשי
+      if (e.target.closest('button')) return;
+      if (e.button !== undefined && e.button !== 0) return;
       const thumb = e.currentTarget;
       imgDrag = {
-        el: thumb,
-        idx: parseInt(thumb.dataset.idx),
+        el: thumb, idx: parseInt(thumb.dataset.idx),
         startX: e.clientX, startY: e.clientY,
-        offsetX: 0, offsetY: 0,
-        clone: null, active: false, pointerId: e.pointerId
+        clone: null, active: false, targetIdx: null
       };
       document.addEventListener('pointermove', onDocPointerMove, { passive: false });
       document.addEventListener('pointerup', onDocPointerUp);
       document.addEventListener('pointercancel', onDocPointerUp);
     }
 
-    function activateDrag(e) {
+    function activateDrag() {
       const thumb = imgDrag.el;
       const rect = thumb.getBoundingClientRect();
       const clone = thumb.cloneNode(true);
@@ -1100,36 +1088,31 @@
       clone.style.height = rect.height + 'px';
       document.body.appendChild(clone);
       imgDrag.clone = clone;
-      imgDrag.offsetX = imgDrag.startX - rect.left;
-      imgDrag.offsetY = imgDrag.startY - rect.top;
       imgDrag.active = true;
       thumb.classList.add('dragging');
     }
 
+    function clearDropTargets() {
+      document.querySelectorAll('.image-thumb.drop-target').forEach(t => t.classList.remove('drop-target'));
+    }
+
     function onDocPointerMove(e) {
       if (!imgDrag) return;
-      const dx = e.clientX - imgDrag.startX;
-      const dy = e.clientY - imgDrag.startY;
+      const dx = e.clientX - imgDrag.startX, dy = e.clientY - imgDrag.startY;
       if (!imgDrag.active) {
         if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
-        activateDrag(e);
+        activateDrag();
       }
       e.preventDefault();
-      // התמונה ה"מרחפת" עוקבת אחרי האצבע/עכבר
-      imgDrag.clone.style.left = (e.clientX - imgDrag.offsetX) + 'px';
-      imgDrag.clone.style.top = (e.clientY - imgDrag.offsetY) + 'px';
-      // החלפת מקום חיה כשעוברים מעל תמונה אחרת
-      const list = imgDrag.el.parentNode;
-      if (!list) return;
+      // ה"עותק" עוקב חלק אחרי הסמן (בלי הזזת DOM => בלי ריצוד)
+      imgDrag.clone.style.transform = `translate(${dx}px, ${dy}px) scale(1.08)`;
       const over = thumbAtPoint(e.clientX, e.clientY);
-      if (over && over !== imgDrag.el && over.parentNode === list) {
-        const kids = Array.prototype.slice.call(list.children);
-        const fromPos = kids.indexOf(imgDrag.el);
-        const overPos = kids.indexOf(over);
-        flipReorder(list, function () {
-          if (fromPos < overPos) list.insertBefore(imgDrag.el, over.nextSibling);
-          else list.insertBefore(imgDrag.el, over);
-        });
+      clearDropTargets();
+      if (over && over !== imgDrag.el) {
+        over.classList.add('drop-target');
+        imgDrag.targetIdx = parseInt(over.dataset.idx);
+      } else {
+        imgDrag.targetIdx = null;
       }
     }
 
@@ -1140,64 +1123,78 @@
       document.removeEventListener('pointercancel', onDocPointerUp);
       const drag = imgDrag;
       imgDrag = null;
+      clearDropTargets();
 
-      if (!drag.active) {
-        // לא זזה — לחיצה רגילה => תצוגה מקדימה גדולה
-        openImagePreview(drag.idx);
-        return;
-      }
+      if (!drag.active) { openImagePreview(drag.idx); return; }
 
-      // סיום גרירה: קוראים את הסדר הסופי מה-DOM ומעדכנים את המערך
-      const list = drag.el.parentNode;
-      if (list) {
-        const order = Array.prototype.slice.call(list.querySelectorAll('.image-thumb'))
-          .map(el => parseInt(el.dataset.idx));
-        const snapshot = formImages.slice();
-        formImages = order.map(i => snapshot[i]).filter(Boolean);
-      }
       if (drag.clone && drag.clone.parentNode) drag.clone.parentNode.removeChild(drag.clone);
       drag.el.classList.remove('dragging');
+
+      const from = drag.idx;
+      if (drag.targetIdx !== null && drag.targetIdx !== from) {
+        const item = formImages[from];
+        const targetItem = formImages[drag.targetIdx];
+        const without = formImages.filter((_, i) => i !== from);
+        const pos = without.indexOf(targetItem);
+        without.splice(pos, 0, item); // מכניס לפני היעד
+        formImages = without;
+      }
       renderImagesList();
     }
 
-    // אנימציית FLIP: מזיז חלק את שאר התמונות בזמן החלפה
-    function flipReorder(list, mutate) {
-      const els = Array.prototype.slice.call(list.children);
-      const before = new Map();
-      els.forEach(el => before.set(el, el.getBoundingClientRect()));
-      mutate();
-      els.forEach(el => {
-        if (el === (imgDrag && imgDrag.el)) return; // הנגררת מיוצגת ע"י ה-clone
-        const b = before.get(el);
-        if (!b) return;
-        const a = el.getBoundingClientRect();
-        const dx = b.left - a.left, dy = b.top - a.top;
-        if (dx || dy) {
-          el.style.transition = 'none';
-          el.style.transform = `translate(${dx}px, ${dy}px)`;
-          requestAnimationFrame(() => {
-            el.style.transition = 'transform 0.18s ease';
-            el.style.transform = '';
-          });
-        }
-      });
-    }
-
-    // ── תצוגה מקדימה גדולה של תמונת מוצר (לפני שמירה) ──
-    function openImagePreview(idx) {
-      const it = formImages[idx];
-      if (!it) return;
-      const src = it.type === 'existing' ? rawUrl(it.src) : it.dataUrl;
+    // ── תצוגה מקדימה גדולה + ניווט בין תמונות המוצר ──
+    let previewIdx = 0;
+    function ensurePreviewOverlay() {
       let ov = document.getElementById('imgPreviewOverlay');
-      if (!ov) {
-        ov = document.createElement('div');
-        ov.id = 'imgPreviewOverlay';
-        ov.innerHTML = '<button class="img-preview-close" aria-label="סגירה">&times;</button><img alt="תצוגה מקדימה">';
-        document.body.appendChild(ov);
-        ov.addEventListener('click', e => { if (e.target === ov || e.target.classList.contains('img-preview-close')) ov.classList.remove('active'); });
-      }
-      ov.querySelector('img').src = src;
+      if (ov) return ov;
+      ov = document.createElement('div');
+      ov.id = 'imgPreviewOverlay';
+      ov.innerHTML =
+        '<button class="img-preview-close" aria-label="סגירה">&times;</button>' +
+        '<button class="img-preview-nav img-preview-prev" aria-label="הקודמת">&#8250;</button>' +
+        '<img alt="תצוגה מקדימה">' +
+        '<button class="img-preview-nav img-preview-next" aria-label="הבאה">&#8249;</button>' +
+        '<div class="img-preview-counter"></div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e => {
+        if (e.target === ov || e.target.classList.contains('img-preview-close')) { closeImagePreview(); return; }
+        if (e.target.classList.contains('img-preview-prev')) previewStep(-1);
+        else if (e.target.classList.contains('img-preview-next')) previewStep(1);
+      });
+      return ov;
+    }
+    function openImagePreview(idx) {
+      if (!formImages.length) return;
+      previewIdx = idx;
+      const ov = ensurePreviewOverlay();
+      updateImagePreview();
       ov.classList.add('active');
+      document.addEventListener('keydown', onPreviewKey);
+    }
+    function updateImagePreview() {
+      const ov = document.getElementById('imgPreviewOverlay');
+      if (!ov) return;
+      const it = formImages[previewIdx];
+      if (!it) return;
+      ov.querySelector('img').src = it.type === 'existing' ? rawUrl(it.src) : it.dataUrl;
+      ov.querySelector('.img-preview-counter').textContent = (previewIdx + 1) + ' / ' + formImages.length;
+      const multi = formImages.length > 1;
+      ov.querySelectorAll('.img-preview-nav').forEach(b => b.style.display = multi ? 'flex' : 'none');
+    }
+    function previewStep(dir) {
+      if (!formImages.length) return;
+      previewIdx = (previewIdx + dir + formImages.length) % formImages.length;
+      updateImagePreview();
+    }
+    function closeImagePreview() {
+      const ov = document.getElementById('imgPreviewOverlay');
+      if (ov) ov.classList.remove('active');
+      document.removeEventListener('keydown', onPreviewKey);
+    }
+    function onPreviewKey(e) {
+      if (e.key === 'Escape') closeImagePreview();
+      else if (e.key === 'ArrowRight') previewStep(-1); // RTL: ימינה => הקודמת
+      else if (e.key === 'ArrowLeft') previewStep(1);
     }
 
     function compressImage(file, maxWidth = 800, quality = 0.75) {
