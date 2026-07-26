@@ -559,7 +559,9 @@ async function fetchFromGhApi(filePath) {
 }
 
 async function fetchLocal(filePath) {
-  const res = await fetch(filePath);
+  // תמיד מביאים גרסה טרייה כדי שעדכונים מהאדמין (מוצרים/הגדרות) יופיעו ללקוח מיד
+  const sep = filePath.includes('?') ? '&' : '?';
+  const res = await fetch(filePath + sep + '_=' + Date.now(), { cache: 'no-store' });
   if (!res.ok) throw new Error('Local ' + res.status);
   return res.json();
 }
