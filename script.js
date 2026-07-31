@@ -193,8 +193,8 @@ function createCarouselHTML(images, name) {
       <img src="${images[0]}" alt="${name}" loading="lazy" width="400" height="400" onerror="imgErrorFallback(this)">
     </div>`;
   }
-  const slides = images.map((src, i) =>
-    `<div class="carousel-slide"><img ${i === 0 ? `src="${src}"` : `src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="${src}"`} alt="${name}" loading="lazy" width="400" height="400" onerror="imgErrorFallback(this)"></div>`
+  const slides = images.map((src) =>
+    `<div class="carousel-slide"><img src="${src}" alt="${name}" loading="lazy" width="400" height="400" onerror="imgErrorFallback(this)"></div>`
   ).join('');
   const dots = images.map((_, i) => `<span class="carousel-dot${i === 0 ? ' active' : ''}" data-idx="${i}"></span>`).join('');
   return `<div class="product-card-image carousel-container">
@@ -203,39 +203,28 @@ function createCarouselHTML(images, name) {
   </div>`;
 }
 
-function lazyLoadSlide(track, idx) {
-  const slides = track.querySelectorAll('.carousel-slide img[data-src]');
-  slides.forEach(img => {
-    if (img.dataset.src) {
-      img.src = img.dataset.src;
-      delete img.dataset.src;
-      img.removeAttribute('data-src');
-    }
-  });
-}
-
 function initCardCarousel(card) {
   const track = card.querySelector('.carousel-track');
   if (!track) return;
   const dots = card.querySelectorAll('.carousel-dot');
   let currentSlide = 0;
   const slideCount = dots.length;
+  // ב-RTL scrollLeft שלילי בזמן גלילה — משתמשים בערך מוחלט לחישוב האינדקס
+  const rtl = getComputedStyle(track).direction === 'rtl';
 
   track.addEventListener('scroll', () => {
-    const idx = Math.round(track.scrollLeft / track.offsetWidth);
+    const idx = Math.round(Math.abs(track.scrollLeft) / track.offsetWidth);
     if (idx !== currentSlide && idx >= 0 && idx < slideCount) {
       currentSlide = idx;
       dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-      lazyLoadSlide(track, idx);
     }
   });
 
   dots.forEach(dot => {
     dot.addEventListener('click', e => {
       e.stopPropagation();
-      const idx = parseInt(dot.dataset.idx);
-      lazyLoadSlide(track, idx);
-      track.scrollTo({ left: idx * track.offsetWidth, behavior: 'smooth' });
+      const idx = parseInt(dot.dataset.idx, 10);
+      track.scrollTo({ left: (rtl ? -1 : 1) * idx * track.offsetWidth, behavior: 'smooth' });
     });
   });
 }
