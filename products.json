@@ -93,17 +93,18 @@
     "badge": "פופולרי"
   },
   {
-    "id": 2,
-    "name": "עוגיות שוקולד חלב&בלונדי",
+    "id": 1774726253193,
+    "name": "מיקס מגולגלות נוטלה&קינדר",
     "category": "cookies",
     "categoryLabel": "עוגיות",
-    "price": 95,
-    "description": "5 יח׳ עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים. קוטר 8",
-    "image": "images/product-1785022862989-m5y72-1.jpeg",
+    "price": 76,
+    "description": "מיקס שני טעמים- 12 יח׳ מגולגלות קקאו קינדר ומגולגלות נוטלה קינדר",
+    "image": "images/product-1786531163304-m4btj-4.jpeg",
     "images": [
-      "images/product-1785022862989-m5y72-1.jpeg"
-    ],
-    "badge": "פופולרי"
+      "images/product-1786531163304-m4btj-4.jpeg",
+      "images/product-1786531165779-w2ogq-5.jpeg",
+      "images/product-1774726250459-am1pq-11.jpeg"
+    ]
   },
   {
     "id": 12,
@@ -147,16 +148,17 @@
     "maxPrice": 160
   },
   {
-    "id": 5,
-    "name": "כדורי שוקולד 100%",
+    "id": 2,
+    "name": "עוגיות שוקולד חלב&בלונדי",
     "category": "cookies",
     "categoryLabel": "עוגיות",
-    "price": 85,
-    "description": "20 יח׳ כדורי שוקולד 100% שוקולד מריר איכותי עם קוקוס וסוכריות קונפטי.",
-    "image": "images/product-1774256160736-cc97j-3.jpeg",
+    "price": 95,
+    "description": "5 יח׳ עוגיות שוקולד חלב ובלונדי - קריספי מבחוץ ורך מבפנים. קוטר 8",
+    "image": "images/product-1785022862989-m5y72-1.jpeg",
     "images": [
-      "images/product-1774256160736-cc97j-3.jpeg"
-    ]
+      "images/product-1785022862989-m5y72-1.jpeg"
+    ],
+    "badge": "פופולרי"
   },
   {
     "id": 6,
@@ -223,17 +225,15 @@
     "badge": "ליום הולדת"
   },
   {
-    "id": 1774726253193,
-    "name": "מיקס מגולגלות נוטלה&קינדר",
+    "id": 5,
+    "name": "כדורי שוקולד 100%",
     "category": "cookies",
     "categoryLabel": "עוגיות",
-    "price": 76,
-    "description": "מיקס שני טעמים- 12 יח׳ מגולגלות קקאו קינדר ומגולגלות נוטלה קינדר",
-    "image": "images/product-1786531163304-m4btj-4.jpeg",
+    "price": 85,
+    "description": "20 יח׳ כדורי שוקולד 100% שוקולד מריר איכותי עם קוקוס וסוכריות קונפטי.",
+    "image": "images/product-1774256160736-cc97j-3.jpeg",
     "images": [
-      "images/product-1786531163304-m4btj-4.jpeg",
-      "images/product-1786531165779-w2ogq-5.jpeg",
-      "images/product-1774726250459-am1pq-11.jpeg"
+      "images/product-1774256160736-cc97j-3.jpeg"
     ]
   },
   {
