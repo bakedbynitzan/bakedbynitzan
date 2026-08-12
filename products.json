@@ -68,6 +68,19 @@
     ]
   },
   {
+    "id": 1,
+    "name": "האלפחורס  שלי",
+    "category": "cookies",
+    "categoryLabel": "עוגיות",
+    "price": 60,
+    "description": "10 יחידות אלפחורס עם מילוי ריבת חלב איכותית וקוקוס.",
+    "image": "images/product-1774227278674.jpeg",
+    "images": [
+      "images/product-1774227278674.jpeg",
+      "images/product-1786531097557-qn59e-3.png"
+    ]
+  },
+  {
     "id": 1778075720266,
     "name": "מיני קראמבל קוקיז",
     "category": "cookies",
@@ -92,19 +105,6 @@
     ],
     "badge": "פופולרי",
     "archived": true
-  },
-  {
-    "id": 1,
-    "name": "האלפחורס  שלי",
-    "category": "cookies",
-    "categoryLabel": "עוגיות",
-    "price": 60,
-    "description": "10 יחידות אלפחורס עם מילוי ריבת חלב איכותית וקוקוס.",
-    "image": "images/product-1774227278674.jpeg",
-    "images": [
-      "images/product-1774227278674.jpeg",
-      "images/product-1786531097557-qn59e-3.png"
-    ]
   },
   {
     "id": 12,
